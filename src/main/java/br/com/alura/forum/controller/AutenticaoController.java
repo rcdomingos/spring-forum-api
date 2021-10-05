@@ -33,8 +33,6 @@ public class AutenticaoController {
         try {
             Authentication authenticate = authManager.authenticate(dadosLogin);//spring sabe que vai chamar authenticateService
             String token = tokenService.gerarToken(authenticate);
-            System.out.println(token);
-
             return ResponseEntity.ok().body(new TokenDto(token, "Bearer"));
         }catch (AuthenticationException e){
             return ResponseEntity.badRequest().build();
