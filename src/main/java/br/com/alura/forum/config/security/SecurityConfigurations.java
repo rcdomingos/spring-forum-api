@@ -1,5 +1,6 @@
 package br.com.alura.forum.config.security;
 
+import br.com.alura.forum.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,12 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AutenticaoService authenticaoService;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @Autowired
+    private UsuarioRepository repository;
 
     // fazer a injeção de dependencia da clasee AuthenticationManager
     @Override
@@ -44,7 +51,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and().csrf().disable()//desabilitar a verificação do token
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //criar a politica stateles
-                .and().addFilterBefore(new AutenticacaoViaTokenFilter(), UsernamePasswordAuthenticationFilter.class);//chamar nosso filtro antes do filtro do spring
+                .and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, repository), UsernamePasswordAuthenticationFilter.class);//chamar nosso filtro antes do filtro do spring
     }
 
     //Configurações de recursos estaticos (CSS,JS,Imagens,etc)
